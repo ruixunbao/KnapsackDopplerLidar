@@ -11,6 +11,9 @@
 //#include <QTime>
 #include <QWidget>
 #include "mainwindow.h"
+#include "QToolBar"
+#include "QAction"
+#include "QMouseEvent"
 
 namespace Ui {
 class MainWindow;
@@ -27,10 +30,13 @@ signals:
     void data_changed();
 public slots:
     void changeData();
+    void quitActionTriggered();
 //    void setHeight(int hei);
 //    void setHSpeed(double sp);
 //    void setHdirection(double dir);
 //    void setVSpeed(double sp);
+
+    void toolBarControlTimerOutFcn();
 
 private:
     Ui::MainWindow *ui;
@@ -48,7 +54,18 @@ private:
     QLabel *HorizontalDirection;
     QLabel *HorizontalVelocity;
     wind_display *DisplaySpeed;
-       QGridLayout *Glayout;
+    QGridLayout *Glayout;
+
+    QToolBar *mainToolBar;
+    QAction *quitAction;
+    bool isToolBarShowed;
+    void showToolBar(bool isToolBarShowed);
+
+    void mouseDoubleClickEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+
+    QTimer *toolBarControlTimer;
+
 public:
 
     QTimer *timer;

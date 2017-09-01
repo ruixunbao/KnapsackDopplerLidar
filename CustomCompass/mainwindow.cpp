@@ -15,6 +15,17 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+    mainToolBar = new QToolBar(this);
+    quitAction = mainToolBar->addAction(QString::fromLocal8Bit("退出"));
+    connect(quitAction, SIGNAL(triggered(bool)), this, SLOT(quitActionTriggered()));
+    this->addToolBar(mainToolBar);
+    isToolBarShowed = false;
+    showToolBar(isToolBarShowed);
+    toolBarControlTimer = new QTimer(this);
+    toolBarControlTimer->setSingleShot(true);
+    toolBarControlTimer->setInterval(3000);
+    connect(toolBarControlTimer, SIGNAL(timeout()), this, SLOT(toolBarControlTimerOutFcn()));
+
     //数据初始化
     n = 10;
     H_low = 100;
@@ -63,6 +74,51 @@ void MainWindow::changeData()
         DisplaySpeed->setHSpeed(H_speed);
         DisplaySpeed->setHDirection(H_direction);
         DisplaySpeed->setVSpeed(V_speed);
+    }
+}
+
+void MainWindow::quitActionTriggered()
+{
+    this->close();
+}
+
+void MainWindow::toolBarControlTimerOutFcn()
+{
+    qDebug() << "1111111111111";
+    isToolBarShowed = false;
+    showToolBar(isToolBarShowed);
+}
+
+void MainWindow::showToolBar(bool isToolBarShowed)
+{
+    mainToolBar->setVisible(isToolBarShowed);
+}
+
+void MainWindow::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        if (isToolBarShowed) {
+            isToolBarShowed = false;
+            showToolBar(isToolBarShowed);
+            toolBarControlTimer->stop();
+        }
+        else {
+            isToolBarShowed = true;
+            showToolBar(isToolBarShowed);
+            toolBarControlTimer->stop();
+            toolBarControlTimer->start(3000);
+        }
+    }
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        if (isToolBarShowed) {
+            isToolBarShowed = false;
+            showToolBar(isToolBarShowed);
+            toolBarControlTimer->stop();
+        }
     }
 }
 
